@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using Turismo_EntityF.Data;
 using Turismo_EntityF.Models;
 
@@ -25,10 +26,17 @@ namespace Turismo_EntityF.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTicket()
         {
-          if (_context.Ticket == null)
-          {
-              return NotFound();
-          }
+            
+            if (_context.Ticket == null)
+            {
+                return NotFound();
+            }
+
+            await _context.Ticket.Include(o => o.Origin).ToListAsync();
+            await _context.Address.Include(c => c.City).ToListAsync();
+            await _context.Ticket.Include(t => t.Destiny).ToListAsync();
+            await _context.Ticket.Include(c => c.ClientTicket).ToListAsync();
+
             return await _context.Ticket.ToListAsync();
         }
 
@@ -40,6 +48,11 @@ namespace Turismo_EntityF.Controllers
           {
               return NotFound();
           }
+            await _context.Ticket.Include(o => o.Origin).ToListAsync();
+            await _context.Address.Include(c => c.City).ToListAsync();
+            await _context.Ticket.Include(t => t.Destiny).ToListAsync();
+            await _context.Ticket.Include(c => c.ClientTicket).ToListAsync();
+
             var ticket = await _context.Ticket.FindAsync(id);
 
             if (ticket == null)
@@ -90,6 +103,14 @@ namespace Turismo_EntityF.Controllers
           {
               return Problem("Entity set 'Turismo_EntityFContext.Ticket'  is null.");
           }
+            var origin = _context.Address.Find(ticket.Origin.Id);
+            var destiny = _context.Address.Find(ticket.Destiny.Id);
+            var client = _context.Client.Find(ticket.ClientTicket.Id);
+
+            ticket.Origin = origin;
+            ticket.Destiny = destiny;
+            ticket.ClientTicket = client;
+
             _context.Ticket.Add(ticket);
             await _context.SaveChangesAsync();
 

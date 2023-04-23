@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,17 @@ namespace Turismo_EntityF.Controllers
           {
               return NotFound();
           }
+            
+            await _context.Package.Include(c => c.HotelPackage).ToListAsync();
+            await _context.Package.Include(c => c.TicketPackage).ToListAsync();
+            await _context.Package.Include(c => c.ClientPackage).ToListAsync();
+            await _context.Hotel.Include(c => c.AddressHotel).ToListAsync();
+            await _context.Address.Include(c => c.City).ToListAsync();
+            await _context.Ticket.Include(c => c.Origin).ToListAsync();
+            await _context.Ticket.Include(c => c.Destiny).ToListAsync();
+            await _context.Ticket.Include(c => c.ClientTicket).ToListAsync();
+            await _context.Client.Include(c => c.AddressClient).ToListAsync();
+
             return await _context.Package.ToListAsync();
         }
 
@@ -40,6 +52,17 @@ namespace Turismo_EntityF.Controllers
           {
               return NotFound();
           }
+
+            await _context.Package.Include(c => c.HotelPackage).ToListAsync();
+            await _context.Package.Include(c => c.TicketPackage).ToListAsync();
+            await _context.Package.Include(c => c.ClientPackage).ToListAsync();
+            await _context.Hotel.Include(c => c.AddressHotel).ToListAsync();
+            await _context.Address.Include(c => c.City).ToListAsync();
+            await _context.Ticket.Include(c => c.Origin).ToListAsync();
+            await _context.Ticket.Include(c => c.Destiny).ToListAsync();
+            await _context.Ticket.Include(c => c.ClientTicket).ToListAsync();
+            await _context.Client.Include(c => c.AddressClient).ToListAsync();
+
             var package = await _context.Package.FindAsync(id);
 
             if (package == null)
@@ -89,7 +112,16 @@ namespace Turismo_EntityF.Controllers
           if (_context.Package == null)
           {
               return Problem("Entity set 'Turismo_EntityFContext.Package'  is null.");
-          }
+            }
+
+            var ticket = _context.Ticket.Find(package.TicketPackage.Id);
+            var client = _context.Client.Find(package.ClientPackage.Id);
+            var hotel = _context.Hotel.Find(package.HotelPackage.Id);
+
+            package.TicketPackage = ticket;
+            package.ClientPackage = client;
+            package.HotelPackage = hotel;
+
             _context.Package.Add(package);
             await _context.SaveChangesAsync();
 

@@ -29,6 +29,8 @@ namespace Turismo_EntityF.Controllers
           {
               return NotFound();
           }
+            await _context.Address.Include(o => o.City).ToListAsync();
+
             return await _context.Address.ToListAsync();
         }
 
@@ -40,6 +42,8 @@ namespace Turismo_EntityF.Controllers
           {
               return NotFound();
           }
+            await _context.Address.Include(o => o.City).ToListAsync();
+
             var address = await _context.Address.FindAsync(id);
 
             if (address == null)
