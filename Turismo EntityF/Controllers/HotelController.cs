@@ -66,6 +66,10 @@ namespace Turismo_EntityF.Controllers
                 return BadRequest();
             }
 
+            var endereco = _context.Address.Find(hotel.AddressHotel.Id);
+
+            hotel.AddressHotel = endereco;
+
             _context.Entry(hotel).State = EntityState.Modified;
 
             try
@@ -96,6 +100,11 @@ namespace Turismo_EntityF.Controllers
           {
               return Problem("Entity set 'Turismo_EntityFContext.Hotel'  is null.");
           }
+
+            var endereco = _context.Address.Find(hotel.AddressHotel.Id);
+
+            hotel.AddressHotel = endereco;
+
             _context.Hotel.Add(hotel);
             await _context.SaveChangesAsync();
 

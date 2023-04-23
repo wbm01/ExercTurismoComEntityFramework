@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +67,10 @@ namespace Turismo_EntityF.Controllers
                 return BadRequest();
             }
 
+            var endereco = _context.Address.Find(client.AddressClient.Id);
+
+            client.AddressClient = endereco;
+
             _context.Entry(client).State = EntityState.Modified;
 
             try
@@ -95,7 +100,12 @@ namespace Turismo_EntityF.Controllers
           if (_context.Client == null)
           {
               return Problem("Entity set 'Turismo_EntityFContext.Client'  is null.");
-          }
+            }
+
+            var endereco = _context.Address.Find(client.AddressClient.Id);
+
+            client.AddressClient = endereco;
+            
             _context.Client.Add(client);
             await _context.SaveChangesAsync();
 

@@ -83,6 +83,14 @@ namespace Turismo_EntityF.Controllers
                 return BadRequest();
             }
 
+            var ticket = _context.Ticket.Find(package.TicketPackage.Id);
+            var client = _context.Client.Find(package.ClientPackage.Id);
+            var hotel = _context.Hotel.Find(package.HotelPackage.Id);
+
+            package.TicketPackage = ticket;
+            package.ClientPackage = client;
+            package.HotelPackage = hotel;
+
             _context.Entry(package).State = EntityState.Modified;
 
             try

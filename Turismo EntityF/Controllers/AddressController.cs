@@ -64,6 +64,10 @@ namespace Turismo_EntityF.Controllers
                 return BadRequest();
             }
 
+            var cidade = _context.City.Find(address.City.Id);
+
+            address.City = cidade;
+
             _context.Entry(address).State = EntityState.Modified;
 
             try
@@ -94,6 +98,11 @@ namespace Turismo_EntityF.Controllers
           {
               return Problem("Entity set 'Turismo_EntityFContext.Address'  is null.");
           }
+            
+            var cidade = _context.City.Find(address.City.Id);
+
+            address.City = cidade;
+
             _context.Address.Add(address);
             await _context.SaveChangesAsync();
 

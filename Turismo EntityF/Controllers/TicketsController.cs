@@ -73,6 +73,14 @@ namespace Turismo_EntityF.Controllers
                 return BadRequest();
             }
 
+            var origin = _context.Address.Find(ticket.Origin.Id);
+            var destiny = _context.Address.Find(ticket.Destiny.Id);
+            var client = _context.Client.Find(ticket.ClientTicket.Id);
+
+            ticket.Origin = origin;
+            ticket.Destiny = destiny;
+            ticket.ClientTicket = client;
+
             _context.Entry(ticket).State = EntityState.Modified;
 
             try
